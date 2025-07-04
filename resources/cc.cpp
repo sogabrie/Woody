@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
             const unsigned char *text_data = (unsigned char *)map + offset;
 
             printf("First 16 bytes of .text:\n");
-            for (size_t j = 0; j < 16 && j < size; j++) {
+            for (size_t j = 0; j < size; j++) {
                 printf("%02x ", text_data[j]);
             }
             printf("\n");
