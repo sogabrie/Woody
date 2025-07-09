@@ -18,7 +18,7 @@ LIBFT_ALL = ${LIBFT_DIR} ${LIBFT_MAKE} ${LIBFT_SRC}
 # Compiled Directories
 SRC = src
 OBJ = obj
-SUBDIRS = main Parsing errors
+SUBDIRS = main parsing errors
 
 # Folder Directions
 SRC_DIR = ${foreach dir, ${SUBDIRS}, ${addprefix ${SRC}/, ${dir}}}
