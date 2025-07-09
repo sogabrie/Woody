@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "minishell.h"
 
 int	s_len(char *ptr)
 {
@@ -53,7 +52,10 @@ char	*get_and_clean(char *ptr)
 		++i;
 	lin = malloc((i + 2) * sizeof(char));
 	if (!lin)
-		malloc_error();
+	{
+		write(2, "Out of memory\n", 15);
+		exit(1);
+	}
 	i = 0;
 	while (ptr[i] && ptr[i] != '\n')
 	{
@@ -85,7 +87,10 @@ char	*get_and_clean_ptr(char *ptr)
 	}
 	ptr2 = malloc((s_len(ptr) - i + 1) * sizeof(char));
 	if (!ptr2)
-		malloc_error();
+	{
+		write(2, "Out of memory\n", 15);
+		exit(1);
+	}
 	++i;
 	j = 0;
 	while (ptr[i])

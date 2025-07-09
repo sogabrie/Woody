@@ -1,5 +1,5 @@
 # Main Variables
-NAME = Woody
+NAME = woody_woodpacker
 FLAGS = -Wall -Wextra -Werror
 MAKE = make
 ECHO = echo
@@ -18,7 +18,7 @@ LIBFT_ALL = ${LIBFT_DIR} ${LIBFT_MAKE} ${LIBFT_SRC}
 # Compiled Directories
 SRC = src
 OBJ = obj
-SUBDIRS = main
+SUBDIRS = main Parsing errors
 
 # Folder Directions
 SRC_DIR = ${foreach dir, ${SUBDIRS}, ${addprefix ${SRC}/, ${dir}}}
@@ -33,12 +33,12 @@ LIB_DIR = ${foreach dir, ${LIBS}, ${wildcard ${dir}/*.h}}
 all : ${NAME}
 
 ${NAME} : ${LIB_DIR} Makefile ${OBJS} ${SRCS} ${LIBFT_ALL}
-	@${MAKE} -C ${LIBFT_DIR} all
-	@cc ${FLAGS} ${LIBS_INCLUDE} ${LIBS_PATH} ${OBJS} -o ${NAME}
+	${MAKE} -C ${LIBFT_DIR} all
+	cc ${FLAGS} ${LIBS_INCLUDE} ${LIBS_PATH} ${OBJS} -o ${NAME}
 
 ${OBJ}/%.o : ${SRC}/%.c ${LIB_DIR}
-	@mkdir -p ${OBJ} ${OBJ_DIR}
-	@cc ${CFLAGS} ${LIBS_INCLUDE} -c $< -o $@
+	mkdir -p ${OBJ} ${OBJ_DIR}
+	cc ${CFLAGS} ${LIBS_INCLUDE} -c $< -o $@
 
 clean :
 	@${MAKE} -C ${LIBFT_DIR} clean
