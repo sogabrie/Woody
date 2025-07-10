@@ -1,10 +1,10 @@
 #include "woody.h"
 
 void main_pars(Elf_t elf, char *filename, char *key) {
-    if(cheack_key(key)) {
-        fprintf(stderr, "Invalid key provided.\n");
-        exit(EXIT_FAILURE);
-    }
+    // if(cheack_key(key)) {
+    //     fprintf(stderr, "Invalid key provided.\n");
+    //     exit(EXIT_FAILURE);
+    // }
     elf.fd = open(filename, O_RDWR);
     if (elf.fd < 0)
         error_file(filename);
@@ -33,11 +33,13 @@ void main_pars(Elf_t elf, char *filename, char *key) {
     }
 
     if(bytes[EI_CLASS] == ELFCLASS64) {
+        printf("This is a 64-bit ELF file.\n");
         elf.ehdr64 = (Elf64_Ehdr *)elf.map;
         elf.phdr64 = (Elf64_Phdr *)(elf.map + elf.ehdr64->e_phoff);
         elf.ehdr32 = NULL;
         elf.phdr32 = NULL;
     } else if (bytes[EI_CLASS] == ELFCLASS32) {
+        printf("This is a 32-bit ELF file.\n");
         elf.ehdr32 = (Elf32_Ehdr *)elf.map;
         elf.phdr32 = (Elf32_Phdr *)(elf.map + elf.ehdr32->e_phoff);
         elf.ehdr64 = NULL;
@@ -46,6 +48,13 @@ void main_pars(Elf_t elf, char *filename, char *key) {
         munmap(elf.map, elf.filesize);
         error_file("Unsupported ELF class");
     }
-    
+    for (off_t i = 0; i < elf.filesize; i++)
+        {
+            printf("%02x ", bytes[i]);
+            if ((i + 1) % 16 == 0)
+                printf("\n");
+        }
+    printf("\n");
+
     munmap(elf.map, elf.filesize);
 }

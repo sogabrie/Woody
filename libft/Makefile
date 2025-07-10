@@ -10,21 +10,21 @@ OBJS = ${SRCS:.c=.o}
 
 # Compile Part
 all : $(NAME)
-	@echo > /dev/null
+	echo > /dev/null
 
 ${NAME} : ${OBJS} Makefile ${SRCS}
-	@${RM} ${NAME}
-	@ar rcs ${NAME} ${OBJS}
-	@${MAKE} LIBFT_FINISH
+	${RM} ${NAME}
+	ar rcs ${NAME} ${OBJS}
+	${MAKE} LIBFT_FINISH
 
 %.o : %.c
-	@${CC} ${CFLAGS} ${LIBS} -c $< -o $@
+	${CC} ${CFLAGS} ${LIBS} -c $< -o $@
 
 clean :
-	@${RM} ${OBJS}
+	${RM} ${OBJS}
 
 fclean : clean
-	@${RM} ${NAME}
+	${RM} ${NAME}
 
 re : fclean ${NAME} 
 
@@ -32,7 +32,7 @@ re : fclean ${NAME}
 
 # Helper messages
 LIBFT_FINISH :
-	@echo "${BLUE}Compiling LIBFT..${RESET}"
+	echo "${BLUE}Compiling LIBFT..${RESET}"
 
 # ANSI Colors
 RESET  = \033[0m

@@ -34,21 +34,21 @@ all : ${NAME}
 
 ${NAME} : ${LIB_DIR} Makefile ${OBJS} ${SRCS} ${LIBFT_ALL}
 	${MAKE} -C ${LIBFT_DIR} all
-	cc ${FLAGS} ${LIBS_INCLUDE} ${LIBS_PATH} ${OBJS} -o ${NAME}
+	cc ${FLAGS} ${LIBS_INCLUDE} ${OBJS} ${LIBS_PATH} -o ${NAME}
 
 ${OBJ}/%.o : ${SRC}/%.c ${LIB_DIR}
 	mkdir -p ${OBJ} ${OBJ_DIR}
 	cc ${CFLAGS} ${LIBS_INCLUDE} -c $< -o $@
 
 clean :
-	@${MAKE} -C ${LIBFT_DIR} clean
-	@${RM} ${OBJ}
+	${MAKE} -C ${LIBFT_DIR} clean
+	${RM} ${OBJ}
 
 fclean : clean
-	@${MAKE} -C ${LIBFT_DIR} fclean
-	@${RM} ${NAME}
+	${MAKE} -C ${LIBFT_DIR} fclean
+	${RM} ${NAME}
 
 re : fclean 
-	@${MAKE} all
+	${MAKE} all
 
 .PHONY : all clean fclean re
