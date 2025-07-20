@@ -10,7 +10,9 @@ int main(int argc, char **argv) {
         key = argv[2];
     }else {
         fprintf(stderr, "Invalid number of arguments.\n");
+        return (1);
     }
-    main_pars(elf, argv[1], key);
+    main_pars(&elf, argv[1], key);
+    encryption_text(&elf);
     return 0;
 }

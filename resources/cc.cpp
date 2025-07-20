@@ -148,3 +148,15 @@ int main(int argc, char **argv) {
     return 0;
 }
 //aaaa
+
+
+// Elf64_Ehdr *ehdr = ...;
+// Elf64_Shdr *shdr = (Elf64_Shdr *)(file + ehdr->e_shoff);
+// char *shstrtab = ...;
+
+// for (int i = 0; i < ehdr->e_shnum; i++) {
+//     if (strcmp(shstrtab + shdr[i].sh_name, ".text") == 0) {
+//         printf("Нашли секцию .text, её offset = 0x%lx, size = 0x%lx\n",
+//                shdr[i].sh_offset, shdr[i].sh_size);
+//     }
+// }

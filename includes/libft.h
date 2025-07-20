@@ -87,6 +87,6 @@ int		s_len(char *ptr);
 char	*char_n(char *ptr);
 char	*get_and_clean(char *ptr);
 char	*get_and_clean_ptr(char	*ptr);
-char	*s_cp(char *s1, char *s2, int i);
+// char	*s_cp(char *s1, char *s2, int i);
 
 #endif
