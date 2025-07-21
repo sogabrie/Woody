@@ -21,9 +21,49 @@ void check_ELF(Elf_t *elf)
         error_file_map("Unsupported ELF type", elf->map, elf->size);
 }
 
-void check_key(char *key) {
-    if (strlen(key) != KEY_SIZE)
-        error_file("Key must be 32 characters long.\n");
+int hex_char_to_int(char c) {
+    if ('0' <= c && c <= '9') return c - '0';
+    else if ('a' <= c && c <= 'f') return 10 + (c - 'a');
+    else if ('A' <= c && c <= 'F') return 10 + (c - 'A');
+    else return -1;
+}
+
+void check_key(Elf_t *elf, char *key) {
+    if (strlen(key) != KEY_SIZE * 2)
+        error_file("Input string must be exactly 64 hex characters.\n");
+    for (int i = 0; i < 32; i++) {
+        int high = hex_char_to_int(key[2 * i]);
+        int low  = hex_char_to_int(key[2 * i + 1]);
+
+        if (high == -1 || low == -1) {
+            error_file("Invalid hex character\n");
+        }
+        elf->key[i] = (char)((high << 4) | low);
+    }
+}
+
+void	get_key(Elf_t *elf)
+{
+	int		fd;
+
+	if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
+        error_file("/dev/urandom");
+	read(fd, elf->key, KEY_SIZE);
+	close(fd);
+}
+
+void print_key(Elf_t *elf, char *key)
+{
+    if(key)
+        check_key(elf, key);
+    else
+        get_key(elf);
+	int i = -1;
+	printf("encryption key : 0x");
+	while (++i < KEY_SIZE)
+		printf("%02hhx", elf->key[i]);
+	printf("\n");
+    fflush(NULL);
 }
 
 void main_pars(Elf_t *elf, char *filename, char *key) {
@@ -31,8 +71,7 @@ void main_pars(Elf_t *elf, char *filename, char *key) {
 
     if (elf == NULL || filename == NULL)
         error_file("Invalid parameters passed to main_pars.\n");
-    if(key)
-        check_key(key);
+    print_key(elf, key);
     fd = open(filename, O_RDWR);
     if (fd < 0)
         error_file(filename);
@@ -45,8 +84,8 @@ void main_pars(Elf_t *elf, char *filename, char *key) {
     if (elf->map == MAP_FAILED)
         error_file_fd("Error mapping file", fd);
     // close(fd);
-    if (elf->size < sizeof(Elf64_Ehdr))
-        error_file_map("File too small to be a valid ELF file", elf->map, elf->size);
+    // if (elf->size < sizeof(Elf64_Ehdr))
+    //     error_file_map("File too small to be a valid ELF file", elf->map, elf->size);
     elf->arch = ((Elf64_Ehdr *)elf->map)->e_ident[EI_CLASS];
     elf->map_end = elf->map + elf->size;
     check_ELF(elf);

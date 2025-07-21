@@ -34,7 +34,7 @@ typedef struct s_elf_file
 //parsing
     //pareser.c
     void check_ELF(Elf_t *elf);
-    void check_key(char *key);
+    void check_key(Elf_t *elf, char *key);
     void main_pars(Elf_t *elf, char *filename, char *key);
 
 //errors
@@ -48,7 +48,9 @@ typedef struct s_elf_file
     void set_phdr_flags(Elf_t *elf, uint32_t flags);
     void encryption_text(Elf_t *elf);
     //encrypy.s
-    void encrypt_xor_rol(uint8_t *data, size_t len, uint8_t *key, size_t keylen);
+    // void encrypt_xor_rol_64(uint8_t *data, size_t len, uint8_t *key, size_t keylen);
+    // void decrypt_xor_rol_64(uint8_t *data, size_t len, uint8_t *key, size_t keylen);
+    void _decrypt_xor_rol_32(uint8_t *data, size_t len, uint8_t *key, size_t keylen);
     //get_sections.c
     int is_text_section(void *phdr, uint8_t arch);
     int is_data_section(void *phdr, uint8_t arch);
