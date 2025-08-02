@@ -13,13 +13,13 @@ Disassembly of section .text:
    6:	eb 5c                	jmp    64 <woody_call_stub>
 
 00000008 <end_code>:
-   8:	b9 2b 00 00 00       	mov    ecx,0x2b
+   8:	b9 2b 00 00 00       	mov    ecx,0x2b ; text_size:
    d:	be 20 00 00 00       	mov    esi,0x20
   12:	e8 00 00 00 00       	call   17 <get_text_data_offset>
 
 00000017 <get_text_data_offset>:
   17:	8b 14 24             	mov    edx,DWORD PTR [esp]
-  1a:	81 ea 00 00 01 00    	sub    edx,0x10000
+  1a:	81 ea 00 00 01 00    	sub    edx,0x10000 ; text
   20:	c3                   	ret
   21:	31 db                	xor    ebx,ebx
   23:	eb 6e                	jmp    93 <key_call_stub>
@@ -61,7 +61,7 @@ Disassembly of section .text:
   5b:	5b                   	pop    ebx
   5c:	89 ec                	mov    esp,ebp
   5e:	5d                   	pop    ebp
-  5f:	e9 26 00 00 00       	jmp    8a <woody_str+0x5>
+  5f:	e9 26 00 00 00       	jmp    8a <woody_str+0x5> ; end
 
 00000064 <woody_call_stub>:
   64:	50                   	push   eax

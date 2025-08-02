@@ -77,7 +77,7 @@ back_key:
     mov     esp, ebp
     pop     ebp
     
-    jmp     42                  
+    jmp     42              ; end   
 
 woody_call_stub:
     push    eax
