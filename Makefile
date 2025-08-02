@@ -1,6 +1,6 @@
 # Main Variables
 NAME = woody_woodpacker
-# FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 MAKE = make
 ECHO = echo
 RM = rm -rf
@@ -18,7 +18,7 @@ LIBFT_ALL = ${LIBFT_DIR} ${LIBFT_MAKE} ${LIBFT_SRC}
 # Compiled Directories
 SRC = src
 OBJ = obj
-SUBDIRS = main parsing errors
+SUBDIRS = main parsing errors chreat
 
 # Folder Directions
 SRC_DIR = ${foreach dir, ${SUBDIRS}, ${addprefix ${SRC}/, ${dir}}}

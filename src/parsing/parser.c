@@ -58,7 +58,8 @@ void print_key(Elf_t *elf, char *key)
         check_key(elf, key);
     else
         get_key(elf);
-	int i = -1;
+    
+    int i = -1;
 	printf("encryption key : 0x");
 	while (++i < KEY_SIZE)
 		printf("%02hhx", elf->key[i]);

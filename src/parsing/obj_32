@@ -1,0 +1,98 @@
+
+decrypt_32.o:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+00000000 <_decrypt_xor_rol_32>:
+   0:	55                   	push   ebp
+   1:	89 e5                	mov    ebp,esp
+   3:	53                   	push   ebx
+   4:	56                   	push   esi
+   5:	57                   	push   edi
+   6:	eb 5c                	jmp    64 <woody_call_stub>
+
+00000008 <end_code>:
+   8:	b9 2b 00 00 00       	mov    ecx,0x2b
+   d:	be 20 00 00 00       	mov    esi,0x20
+  12:	e8 00 00 00 00       	call   17 <get_text_data_offset>
+
+00000017 <get_text_data_offset>:
+  17:	8b 14 24             	mov    edx,DWORD PTR [esp]
+  1a:	81 ea 00 00 01 00    	sub    edx,0x10000
+  20:	c3                   	ret
+  21:	31 db                	xor    ebx,ebx
+  23:	eb 6e                	jmp    93 <key_call_stub>
+
+00000025 <back_key>:
+  25:	5b                   	pop    ebx
+
+00000026 <back_key.loop_start>:
+  26:	39 cb                	cmp    ebx,ecx
+  28:	73 2f                	jae    59 <back_key.loop_end>
+  2a:	50                   	push   eax
+  2b:	52                   	push   edx
+  2c:	89 d8                	mov    eax,ebx
+  2e:	01 f0                	add    eax,esi
+  30:	31 d2                	xor    edx,edx
+  32:	bf 1f 00 00 00       	mov    edi,0x1f
+  37:	f7 f7                	div    edi
+  39:	88 d1                	mov    cl,dl
+  3b:	5a                   	pop    edx
+  3c:	58                   	pop    eax
+  3d:	0f b6 04 1a          	movzx  eax,BYTE PTR [edx+ebx*1]
+  41:	d2 c8                	ror    al,cl
+  43:	50                   	push   eax
+  44:	52                   	push   edx
+  45:	89 d8                	mov    eax,ebx
+  47:	31 d2                	xor    edx,edx
+  49:	f7 f1                	div    ecx
+  4b:	0f b6 3c 13          	movzx  edi,BYTE PTR [ebx+edx*1]
+  4f:	5a                   	pop    edx
+  50:	58                   	pop    eax
+  51:	30 d0                	xor    al,dl
+  53:	88 04 1a             	mov    BYTE PTR [edx+ebx*1],al
+  56:	43                   	inc    ebx
+  57:	eb cd                	jmp    26 <back_key.loop_start>
+
+00000059 <back_key.loop_end>:
+  59:	5f                   	pop    edi
+  5a:	5e                   	pop    esi
+  5b:	5b                   	pop    ebx
+  5c:	89 ec                	mov    esp,ebp
+  5e:	5d                   	pop    ebp
+  5f:	e9 26 00 00 00       	jmp    8a <woody_str+0x5>
+
+00000064 <woody_call_stub>:
+  64:	50                   	push   eax
+  65:	53                   	push   ebx
+  66:	51                   	push   ecx
+  67:	52                   	push   edx
+  68:	e8 00 00 00 00       	call   6d <get_eip_woody_str>
+
+0000006d <get_eip_woody_str>:
+  6d:	59                   	pop    ecx
+  6e:	b8 04 00 00 00       	mov    eax,0x4
+  73:	bb 01 00 00 00       	mov    ebx,0x1
+  78:	ba 0e 00 00 00       	mov    edx,0xe
+  7d:	cd 80                	int    0x80
+  7f:	5a                   	pop    edx
+  80:	59                   	pop    ecx
+  81:	5b                   	pop    ebx
+  82:	58                   	pop    eax
+  83:	eb 83                	jmp    8 <end_code>
+
+00000085 <woody_str>:
+  85:	2e 2e 2e 2e 57       	cs cs cs cs push edi
+  8a:	4f                   	dec    edi
+  8b:	4f                   	dec    edi
+  8c:	44                   	inc    esp
+  8d:	59                   	pop    ecx
+  8e:	2e                   	cs
+  8f:	2e                   	cs
+  90:	2e                   	cs
+  91:	2e                   	cs
+  92:	0a                   	.byte 0xa
+
+00000093 <key_call_stub>:
+  93:	e8 8d ff ff ff       	call   25 <back_key>

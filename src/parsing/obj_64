@@ -1,0 +1,84 @@
+
+decrypt_64.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <decrypt_xor_rol_64>:
+   0:	55                   	push   rbp
+   1:	48 89 e5             	mov    rbp,rsp
+   4:	53                   	push   rbx
+   5:	41 54                	push   r12
+   7:	41 55                	push   r13
+   9:	41 56                	push   r14
+   b:	41 57                	push   r15
+   d:	eb 67                	jmp    76 <woody_call_stub>
+
+000000000000000f <end_code>:
+   f:	41 bf 2b 00 00 00    	mov    r15d,0x2b ; text_size:
+  15:	4c 8d 35 0e 00 00 00 	lea    r14,[rip+0xe]       ; r14 text
+  1c:	41 bd 20 00 00 00    	mov    r13d,0x20
+  22:	4d 31 c0             	xor    r8,r8
+  25:	e9 7f 00 00 00       	jmp    a9 <key_call_stub>
+
+000000000000002a <back_key>:
+  2a:	41 5c                	pop    r12
+
+000000000000002c <back_key.loop_start>:
+  2c:	4d 39 f8             	cmp    r8,r15
+  2f:	73 36                	jae    67 <back_key.loop_end>
+  31:	4c 89 c0             	mov    rax,r8
+  34:	4c 01 e8             	add    rax,r13
+  37:	41 b9 1f 00 00 00    	mov    r9d,0x1f
+  3d:	48 31 d2             	xor    rdx,rdx
+  40:	49 f7 f1             	div    r9
+  43:	88 d1                	mov    cl,dl
+  45:	4f 0f b6 14 06       	movzx  r10,BYTE PTR [r14+r8*1]
+  4a:	41 d2 ca             	ror    r10b,cl
+  4d:	4c 89 c0             	mov    rax,r8
+  50:	48 31 d2             	xor    rdx,rdx
+  53:	49 f7 f5             	div    r13
+  56:	4d 0f b6 0c 14       	movzx  r9,BYTE PTR [r12+rdx*1]
+  5b:	45 30 ca             	xor    r10b,r9b
+  5e:	47 88 14 06          	mov    BYTE PTR [r14+r8*1],r10b
+  62:	49 ff c0             	inc    r8
+  65:	eb c5                	jmp    2c <back_key.loop_start>
+
+0000000000000067 <back_key.loop_end>:
+  67:	41 5f                	pop    r15
+  69:	41 5e                	pop    r14
+  6b:	41 5d                	pop    r13
+  6d:	41 5c                	pop    r12
+  6f:	5b                   	pop    rbx
+  70:	5d                   	pop    rbp
+  71:	e9 26 00 00 00       	jmp    9c <woody_str+0x1> ; end      
+
+0000000000000076 <woody_call_stub>:
+  76:	50                   	push   rax
+  77:	57                   	push   rdi
+  78:	56                   	push   rsi
+  79:	52                   	push   rdx
+  7a:	b8 01 00 00 00       	mov    eax,0x1
+  7f:	bf 01 00 00 00       	mov    edi,0x1
+  84:	48 8d 35 10 00 00 00 	lea    rsi,[rip+0x10]        # 9b <woody_str>
+  8b:	ba 0e 00 00 00       	mov    edx,0xe
+  90:	0f 05                	syscall
+  92:	5a                   	pop    rdx
+  93:	5e                   	pop    rsi
+  94:	5f                   	pop    rdi
+  95:	58                   	pop    rax
+  96:	e9 74 ff ff ff       	jmp    f <end_code>
+
+000000000000009b <woody_str>:
+  9b:	2e 2e 2e 2e 57       	cs cs cs cs push rdi
+  a0:	4f                   	rex.WRXB
+  a1:	4f                   	rex.WRXB
+  a2:	44 59                	rex.R pop rcx
+  a4:	2e                   	cs
+  a5:	2e                   	cs
+  a6:	2e                   	cs
+  a7:	2e                   	cs
+  a8:	0a                   	.byte 0xa
+
+00000000000000a9 <key_call_stub>:
+  a9:	e8 7c ff ff ff       	call   2a <back_key>

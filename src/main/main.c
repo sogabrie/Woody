@@ -14,5 +14,6 @@ int main(int argc, char **argv) {
     }
     main_pars(&elf, argv[1], key);
     encryption_text(&elf);
+    // chreat_elf(&elf);
     return 0;
 }

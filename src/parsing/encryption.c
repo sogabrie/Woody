@@ -75,31 +75,31 @@ void encryption_text(Elf_t *elf)
 	if (text < elf->map || text > elf->map_end || text + elf->text_size > elf->map_end)
         error_file_map("Text section out of bounds", elf->map, elf->size);
     // write(1, "text08\n", 8);
-    for (size_t i = 0; i < elf->text_size; i++)
-	{
-		printf("%02x ", ((uint8_t *)text)[i]);
-		if ((i + 1) % 16 == 0)
-			printf("\n");
-	}
-	printf("\n");
+    // for (size_t i = 0; i < elf->text_size; i++)
+	// {
+	// 	printf("%02x ", ((uint8_t *)text)[i]);
+	// 	if ((i + 1) % 16 == 0)
+	// 		printf("\n");
+	// }
+	// printf("\n");
     
-	// encrypt_xor_rol_64(text, elf->text_size, key, key_size);
-	encrypt_xor_rol(text, elf->text_size, key, key_size);
-    for (size_t i = 0; i < elf->text_size; i++)
-	{
-		printf("%02x ", ((uint8_t *)text)[i]);
-		if ((i + 1) % 16 == 0)
-			printf("\n");
-	}
-	printf("\n");
-	// decrypt_xor_rol(text, elf->text_size, key, key_size);
-	_decrypt_xor_rol_32(text, elf->text_size, key, key_size);
-    for (size_t i = 0; i < elf->text_size; i++)
-	{
-		printf("%02x ", ((uint8_t *)text)[i]);
-		if ((i + 1) % 16 == 0)
-			printf("\n");
-	}
-	printf("\n");
+	encrypt_xor_rol_64(text, elf->text_size, key, key_size);
+	// encrypt_xor_rol(text, elf->text_size, key, key_size);
+    // for (size_t i = 0; i < elf->text_size; i++)
+	// {
+	// 	printf("%02x ", ((uint8_t *)text)[i]);
+	// 	if ((i + 1) % 16 == 0)
+	// 		printf("\n");
+	// }
+	// printf("\n");
+	// // decrypt_xor_rol(text, elf->text_size, key, key_size);
+	// _decrypt_xor_rol_32(text, elf->text_size, key, key_size);
+    // for (size_t i = 0; i < elf->text_size; i++)
+	// {
+	// 	printf("%02x ", ((uint8_t *)text)[i]);
+	// 	if ((i + 1) % 16 == 0)
+	// 		printf("\n");
+	// }
+	// printf("\n");
 
 }

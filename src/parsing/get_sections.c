@@ -64,3 +64,33 @@ void	*get_section(Elf_t *elf, int (*f)(void *, uint8_t))
 	}
 	return (NULL);
 }
+
+Elf64_Phdr	*get_last_seqcion(Elf_t *elf)
+{
+	Elf64_Phdr	*ph;
+	uint16_t	size;
+
+	size = ((Elf64_Ehdr *)elf->map)->e_phnum;
+	ph = elf->map + ((Elf64_Ehdr *)elf->map)->e_phoff;
+	while (--size && (void *)(ph + size) < elf->map_end)
+	{
+		if (ph[size].p_type == PT_LOAD)
+			return (ph + size);
+	}
+	return (NULL);
+}
+
+Elf32_Phdr	*get_last_seqcion_32(Elf_t *elf)
+{
+	Elf32_Phdr	*ph;
+	uint16_t	size;
+
+	size = ((Elf32_Ehdr *)elf->map)->e_phnum;
+	ph = elf->map + ((Elf32_Ehdr *)elf->map)->e_phoff;
+	while (--size && (void *)(ph + size) < elf->map_end)
+	{
+		if (ph[size].p_type == PT_LOAD)
+			return (ph + size);
+	}
+	return (NULL);
+}
