@@ -41,7 +41,7 @@ typedef struct s_elf_file_new
     size_t      str_size;
     char		*new_text;
     size_t      new_text_size;
-    size_t      destroy_size;
+    // size_t      destroy_size;
     Elf64_Phdr	*data;
 	Elf64_Phdr	*last_sect;
 	Elf32_Phdr	*data_32;
@@ -80,8 +80,8 @@ typedef struct s_elf_file_new
     //chreat_elf.c
     void chreat_elf(Elf_t *elf);
     // chreat_destroy.c
-    void chreat_destroy(Elf_t *elf);
-    void chreat_destroy_32(Elf_t *elf);
+    void chreat_destroy(Elf_t *elf, New_Elf_t *new_elf);
+    void chreat_destroy_32(Elf_t *elf, New_Elf_t *new_elf);
 
 
     // void print_hex(const uint8_t *data, size_t len);

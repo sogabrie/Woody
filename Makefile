@@ -39,7 +39,7 @@ ifeq ($(ARCH_MODE), 32)
 else
     ARCH_FLAGS =
     NASM_FORMAT = elf64
-    TARGET_SUFFIX = _x64
+    TARGET_SUFFIX = 
 endif
 
 # Main Part

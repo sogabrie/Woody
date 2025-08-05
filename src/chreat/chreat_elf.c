@@ -1,22 +1,113 @@
 #include "woody.h"
 
+void save_file(char *woody, size_t size)
+{
+	int		fd;
+
+    fd = open("woody", O_WRONLY | O_CREAT | O_TRUNC, 0775);
+	write(fd, woody, size);
+	close(fd);
+}
+
+size_t chreat_new_elf(Elf_t *elf, New_Elf_t *new_elf) {
+    size_t		index;
+    size_t		file_index;
+
+    index = new_elf->data->p_offset + new_elf->data->p_filesz;
+    file_index = index;
+    ft_memcpy(new_elf->str, elf->map, index);
+    if(new_elf->data && new_elf->data->p_filesz != new_elf->data->p_memsz) {
+        ft_bzero(new_elf->str + index, new_elf->data->p_memsz - new_elf->data->p_filesz);
+        index += new_elf->data->p_memsz - new_elf->data->p_filesz;
+        new_elf->data = new_elf->str + ((void *)new_elf->data - elf->map);
+        new_elf->data->p_filesz = new_elf->data->p_memsz;
+    }
+    if(new_elf->last_sect != new_elf->data) {
+        index += new_elf->last_sect->p_offset + new_elf->last_sect->p_filesz - file_index;
+        ft_memcpy(new_elf->str + index, elf->map + file_index, new_elf->last_sect->p_offset +
+            new_elf->last_sect->p_filesz - file_index);
+    }
+    new_elf->last_sect = new_elf->str + ((void *)new_elf->last_sect - elf->map);
+    return index;
+}
+
+size_t chreat_new_elf_32(Elf_t *elf, New_Elf_t *new_elf) {
+    size_t		index;
+    size_t		file_index;
+
+    index = new_elf->data_32->p_offset + new_elf->data_32->p_filesz;
+    file_index = index;
+    ft_memcpy(new_elf->str, elf->map, index);
+    if(new_elf->data_32 && new_elf->data_32->p_filesz != new_elf->data_32->p_memsz) {
+        ft_bzero(new_elf->str + index, new_elf->data_32->p_memsz - new_elf->data_32->p_filesz);
+        index += new_elf->data_32->p_memsz - new_elf->data_32->p_filesz;
+        new_elf->data_32 = new_elf->str + ((void *)new_elf->data_32 - elf->map);
+        new_elf->data_32->p_filesz = new_elf->data_32->p_memsz;
+    }
+    if(new_elf->last_sect_32 != new_elf->data_32) {
+        index += new_elf->last_sect_32->p_offset + new_elf->last_sect_32->p_filesz - file_index;
+        ft_memcpy(new_elf->str + index, elf->map + file_index, new_elf->last_sect_32->p_offset +
+            new_elf->last_sect_32->p_filesz - file_index);
+    }
+    new_elf->last_sect_32 = new_elf->str + ((void *)new_elf->last_sect_32 - elf->map);
+    return index;
+}
+
 void chreat_elf_64(Elf_t *elf, New_Elf_t *new_elf) {
+    size_t		index;
+
     if(!(new_elf->last_sect = get_last_seqcion(elf)))
         error_file("Failed to get last section for 64-bit ELF");
     if(!(new_elf->data = get_section(elf, is_data_section)))
         new_elf->data = new_elf->last_sect;
     
-    chreat_destroy(elf);
+    chreat_destroy(elf, new_elf);
 
+    new_elf->str_size = new_elf->last_sect->p_offset + new_elf->last_sect->p_filesz +
+        new_elf->new_text_size + (new_elf->data->p_memsz - new_elf->data->p_filesz);
+    new_elf->str = malloc(new_elf->str_size);
+    //
+    index = chreat_new_elf(elf, new_elf);
+
+    ft_memcpy(new_elf->str + index, new_elf->new_text, new_elf->new_text_size);
+    ((Elf64_Ehdr *)new_elf->str)->e_entry = new_elf->last_sect->p_vaddr + new_elf->last_sect->p_memsz;
+    new_elf->last_sect->p_filesz += new_elf->new_text_size;
+	new_elf->last_sect->p_memsz += new_elf->new_text_size;
+	new_elf->last_sect->p_flags |= PF_X | PF_R;
+
+	((Elf64_Ehdr *)new_elf->str)->e_shoff = 0;
+	((Elf64_Ehdr *)new_elf->str)->e_shnum = 0;
+	((Elf64_Ehdr *)new_elf->str)->e_shstrndx = SHN_UNDEF;
+	((Elf64_Ehdr *)new_elf->str)->e_shentsize = 0;
+    save_file(new_elf->str, new_elf->str_size);
 }
 
 void chreat_elf_32(Elf_t *elf, New_Elf_t *new_elf) {
+    size_t		index;
+
     if(!(new_elf->last_sect_32 = get_last_seqcion_32(elf)))
         error_file("Failed to get last section for 32-bit ELF");
     if(!(new_elf->data_32 = get_section(elf, is_data_section)))
         new_elf->data_32 = new_elf->last_sect_32;
     
-    chreat_destroy_32(elf);
+    chreat_destroy_32(elf, new_elf);
+    new_elf->str_size = new_elf->last_sect_32->p_offset + new_elf->last_sect_32->p_filesz +
+        new_elf->new_text_size + (new_elf->data_32->p_memsz - new_elf->data_32->p_filesz);
+    new_elf->str = malloc(new_elf->str_size);
+    //
+    index = chreat_new_elf_32(elf, new_elf);
+
+    ft_memcpy(new_elf->str + index, new_elf->new_text, new_elf->new_text_size);
+    ((Elf32_Ehdr *)new_elf->str)->e_entry = new_elf->last_sect_32->p_vaddr + new_elf->last_sect_32->p_memsz;
+    new_elf->last_sect_32->p_filesz += new_elf->new_text_size;
+	new_elf->last_sect_32->p_memsz += new_elf->new_text_size;
+	new_elf->last_sect_32->p_flags |= PF_X | PF_R;
+
+	((Elf32_Ehdr *)new_elf->str)->e_shoff = 0;
+	((Elf32_Ehdr *)new_elf->str)->e_shnum = 0;
+	((Elf32_Ehdr *)new_elf->str)->e_shstrndx = SHN_UNDEF;
+	((Elf32_Ehdr *)new_elf->str)->e_shentsize = 0;
+    save_file(new_elf->str, new_elf->str_size);
 }
 
 void chreat_elf(Elf_t *elf) {
