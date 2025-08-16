@@ -1,19 +1,21 @@
 ; nasm -f elf64 decrypt_64.s -o decrypt_64.o
-; nasm -f elf32 decrypt_32.s -o decrypt_32.o
+; nasm -f elf32 decrypt_32.asm -o decrypt_32.o
 ; objcopy -j .text -O binary decrypt_64.o /dev/stdout | xxd -p -c 256 | sed 's/\(..\)/\\x\1/g' | tr -d '\n' ; echo
 ; objcopy -j .text -O binary decrypt_32.o /dev/stdout | xxd -p -c 256 | sed 's/\(..\)/\\x\1/g' | tr -d '\n' ; echo
 ; objdump -d -M intel -j .text decrypt_64.o
 ; objdump -d -M intel -j .text decrypt_32.o
 
-
+; cd src/parsing/ && nasm -f elf32 decrypt_32.asm -o decrypt_32.o && objdump -d -M intel -j .text decrypt_32.o > obj32 && objcopy -j .text -O binary decrypt_32.o /dev/stdout | xxd -p -c 256 | sed 's/\(..\)/\\x\1/g' | tr -d '\n' ; echo
 BITS 64
 
 section .text
     global decrypt_xor_rol_64
 
 decrypt_xor_rol_64:
-    push    rbp
-    mov     rbp, rsp
+    push    rax
+    push    rdx
+    ; push    rbp
+    ; mov     rbp, rsp
     push    rbx
     push    r12
     push    r13
@@ -68,7 +70,9 @@ back_key:
     pop     r13
     pop     r12
     pop     rbx
-    pop     rbp
+    ; pop     rbp
+    pop     rdx
+    pop     rax
     
     jmp     42          ; end        
 

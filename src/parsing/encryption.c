@@ -67,7 +67,7 @@ void encryption_text(Elf_t *elf)
 	// offset = get_phdr_offset(phdr, elf->arch);
     // write(1, "text04\n", 8);
 	// elf->text_size = get_phdr_filesz(phdr, elf->arch);
-    // write(1, "text05\n", 8);
+    
 	elf->text_size = get_phdr_filesz(elf);
 	key = &(elf->key);
 	key_size = KEY_SIZE;
@@ -84,6 +84,7 @@ void encryption_text(Elf_t *elf)
 	// printf("\n");
     
 	encrypt_xor_rol_64(text, elf->text_size, key, key_size);
+	
 	// encrypt_xor_rol(text, elf->text_size, key, key_size);
     // for (size_t i = 0; i < elf->text_size; i++)
 	// {

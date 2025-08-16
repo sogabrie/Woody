@@ -58,7 +58,8 @@ void chreat_elf_64(Elf_t *elf, New_Elf_t *new_elf) {
 
     if(!(new_elf->last_sect = get_last_seqcion(elf)))
         error_file("Failed to get last section for 64-bit ELF");
-    if(!(new_elf->data = get_section(elf, is_data_section)))
+    new_elf->data = get_section(elf, is_data_section);
+    if(!new_elf->data)
         new_elf->data = new_elf->last_sect;
     
     chreat_destroy(elf, new_elf);
@@ -89,12 +90,14 @@ void chreat_elf_32(Elf_t *elf, New_Elf_t *new_elf) {
         error_file("Failed to get last section for 32-bit ELF");
     if(!(new_elf->data_32 = get_section(elf, is_data_section)))
         new_elf->data_32 = new_elf->last_sect_32;
-    
+    write(1, "text05\n", 8);
     chreat_destroy_32(elf, new_elf);
+    write(1, "text06\n", 8);
+
     new_elf->str_size = new_elf->last_sect_32->p_offset + new_elf->last_sect_32->p_filesz +
         new_elf->new_text_size + (new_elf->data_32->p_memsz - new_elf->data_32->p_filesz);
     new_elf->str = malloc(new_elf->str_size);
-    //
+    
     index = chreat_new_elf_32(elf, new_elf);
 
     ft_memcpy(new_elf->str + index, new_elf->new_text, new_elf->new_text_size);

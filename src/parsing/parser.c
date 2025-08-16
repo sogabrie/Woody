@@ -73,7 +73,8 @@ void main_pars(Elf_t *elf, char *filename, char *key) {
     if (elf == NULL || filename == NULL)
         error_file("Invalid parameters passed to main_pars.\n");
     print_key(elf, key);
-    fd = open(filename, O_RDWR);
+    // fd = open(filename, O_RDWR);
+    fd = open(filename, O_RDONLY);
     if (fd < 0)
         error_file(filename);
     elf->size = lseek(fd, 0, SEEK_END);

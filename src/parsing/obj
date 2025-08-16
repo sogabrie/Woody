@@ -1,0 +1,30 @@
+
+decrypt_32.o:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+00000000 <decrypt_xor_rol_32>:
+   0:	60                   	pusha
+   1:	e8 00 00 00 00       	call   6 <get_woody_str_addr>
+
+00000006 <get_woody_str_addr>:
+   6:	59                   	pop    ecx
+   7:	b8 04 00 00 00       	mov    eax,0x4
+   c:	bb 01 00 00 00       	mov    ebx,0x1
+  11:	ba 0e 00 00 00       	mov    edx,0xe
+  16:	cd 80                	int    0x80
+  18:	61                   	popa
+  19:	e9 26 00 00 00       	jmp    44 <woody_str+0x26>
+
+0000001e <woody_str>:
+  1e:	2e 2e 2e 2e 57       	cs cs cs cs push edi
+  23:	4f                   	dec    edi
+  24:	4f                   	dec    edi
+  25:	44                   	inc    esp
+  26:	59                   	pop    ecx
+  27:	2e                   	cs
+  28:	2e                   	cs
+  29:	2e                   	cs
+  2a:	2e                   	cs
+  2b:	0a                   	.byte 0xa

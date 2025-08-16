@@ -1,111 +1,81 @@
+
+
 BITS 32
 
-section .text
-    global _decrypt_xor_rol_32
+segment .text
+	global decrypt
 
-_decrypt_xor_rol_32:
-    push    ebp
-    mov     ebp, esp
-    push    ebx             
-    push    esi
-    push    edi
-
-    jmp     woody_call_stub
-
+decrypt:
+	pusha
+	jmp woody
 end_code:
-    mov     ecx, 43         ; text_size: 
-    mov     esi, 32          ; key_size: 
-
-    call    get_text_data_offset
-get_text_data_offset:
-    mov     edx, [esp]
-    sub     edx, 0x10000 ; text
-    ret
-
-    xor     ebx, ebx
-
-    jmp     key_call_stub
-
+	pop ecx
+	mov eax, 4
+	mov ebx, 1
+	mov edx, 14
+	int 0x80
+	mov esi, 43 ; text_size
+	call get_eip ; text
+	sub edi, 0x10000
+	jmp key
 back_key:
-    pop     ebx
+	pop ebx ; key
+    push    dword 32
+
+    xor     eax, eax
 
 .loop_start:
-    cmp     ebx, ecx
+    cmp     eax, esi
     jae     .loop_end
 
     push    eax
-    push    edx
-    
-    mov     eax, ebx
-    add     eax, esi
-    
+    push    ecx
+
+    mov     ecx, 32
+    add     ecx, eax
+
+    mov     eax, ecx
     xor     edx, edx
-    mov     edi, 31
-    div     edi
-    
+    mov     ecx, 31
+    div     ecx
+
     mov     cl, dl
     
-    pop     edx
+    pop     ecx
     pop     eax
-
-    movzx   eax, byte [edx + ebx]
+    
+    movzx   eax, byte [edi + eax]
     ror     al, cl
 
     push    eax
-    push    edx
+    push    ecx
     
-    mov     eax, ebx
+    mov     eax, eax
     xor     edx, edx
+    mov     ecx, 32
     div     ecx
 
-    movzx   edi, byte [ebx + edx]
+    movzx   ebx, byte [ebx + edx]
     
-    pop     edx
+    pop     ecx
     pop     eax
 
-    xor     al, dl
+    xor     al, bl
 
-    mov     byte [edx + ebx], al
+    mov     byte [edi + eax], al
 
-    inc     ebx
+    inc     eax
     jmp     .loop_start
 
 .loop_end:
-    pop     edi             
-    pop     esi
-    pop     ebx
-    mov     esp, ebp
-    pop     ebp
-    
-    jmp     42              ; end   
-
-woody_call_stub:
-    push    eax
-    push    ebx
-    push    ecx
-    push    edx
-
-    call    get_eip_woody_str
-get_eip_woody_str:
-    pop     ecx
-
-    mov     eax, 4
-    mov     ebx, 1
-    mov     edx, 14
-    int     0x80
-
-    pop     edx
-    pop     ecx
-    pop     ebx
-    pop     eax
-
-    jmp     end_code
-
-woody_str: db "....WOODY....", 10
-
-key_call_stub:
-    call back_key
-key_str: db ''
-
-
-
+	popa
+	jmp 42
+get_eip:
+	mov edi, [esp]
+	ret
+woody:
+	call end_code
+	woody_str: db "....WOODY....", 10
+key:
+	call back_key
+	key_str: db ''

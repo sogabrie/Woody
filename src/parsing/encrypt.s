@@ -58,5 +58,3 @@ encrypt_xor_rol_64:
     pop     rbx
     pop     rbp
     ret
-
-
