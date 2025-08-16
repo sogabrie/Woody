@@ -77,6 +77,7 @@ void encryption_text(Elf_t *elf)
 	// printf("\n");
     
 	encrypt_xor_rol_64(text, elf->text_size, key, key_size);
+	// encrypt_xor_rol_64(key, key_size, text, elf->text_size);
 	
 	// encrypt_xor_rol(text, elf->text_size, key, key_size);
     // for (size_t i = 0; i < elf->text_size; i++)

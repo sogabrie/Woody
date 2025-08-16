@@ -60,16 +60,17 @@ void chreat_destroy_32(Elf_t *elf, New_Elf_t *new_elf) {
     // file_sz = ((Elf32_Phdr *)elf->text)->p_filesz;
 
     rel_entry = last_entry - 
-        ((Elf32_Addr)(new_elf->last_sect_32->p_vaddr + new_elf->last_sect_32->p_memsz) + (uint16_t)0x63 + sizeof(int32_t));
-    text = (Elf32_Addr)(new_elf->last_sect_32->p_vaddr + new_elf->last_sect_32->p_memsz) + (uint16_t)0x26 - 2 -
+        ((Elf32_Addr)(new_elf->last_sect_32->p_vaddr + new_elf->last_sect_32->p_memsz) + (uint16_t)0x5a + sizeof(int32_t));
+    text = (Elf32_Addr)(new_elf->last_sect_32->p_vaddr + new_elf->last_sect_32->p_memsz) + (uint16_t)0x1c - 2 -
                 ((Elf32_Phdr *)elf->text)->p_vaddr;
     file_sz = ((Elf32_Phdr *)elf->text)->p_filesz;
 
-    // text_size = 22)--- 0x16; text = 38)--- 0x26; key = 131)--- 0x83 ; end = 99)--- 0x63;
-    // text_size = 22)--- 0x16; text = 33)--- 0x21; key = 139)--- 0x8b ; end = 107)--- 0x6b;
 
-    memcpy(new_elf->new_text + (uint16_t)0x16, &file_sz, sizeof(uint32_t));
-    memcpy(new_elf->new_text + (uint16_t)0x83, &elf->key, KEY_SIZE);
-    memcpy(new_elf->new_text + (uint16_t)0x26, &text, sizeof(int32_t));
-    memcpy(new_elf->new_text + (uint16_t)0x63, &rel_entry, sizeof(int32_t));
+    // text_size = 22)--- 0x16; text = 38)--- 0x26; key = 131)--- 0x83 ; end = 99)--- 0x63;
+    // text_size = 37)--- 0x25; text = 28)--- 0x1c; key = 122)--- 0x7a ; end = 90)--- 0x5a;
+
+    memcpy(new_elf->new_text + (uint16_t)0x25, &file_sz, sizeof(uint32_t));
+    memcpy(new_elf->new_text + (uint16_t)0x7a, &elf->key, KEY_SIZE);
+    memcpy(new_elf->new_text + (uint16_t)0x1c, &text, sizeof(int32_t));
+    memcpy(new_elf->new_text + (uint16_t)0x5a, &rel_entry, sizeof(int32_t));
 }
