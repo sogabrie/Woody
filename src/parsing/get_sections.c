@@ -29,27 +29,14 @@ void	*get_section(Elf_t *elf, int (*f)(void *, uint8_t))
 	if (elf->arch == ELFCLASS64) {
 		Elf64_Phdr *ehdr = (Elf64_Phdr *)elf->map;
 		size = ((Elf64_Ehdr *)elf->map)->e_phnum;
-		// printf("size: %d\n", size);
 		phoff = ((Elf64_Ehdr *)elf->map)->e_phoff;
 		ehdr = elf->map + phoff;
 		while (i < size && (void *)(ehdr + i + 1) < elf->map_end) {
 			if (f((void *)(ehdr + i), ELFCLASS64))
 			{
-				// elf->text = ehdr + i;
-				// uint32_t text_size = ((Elf64_Phdr *)elf->text)->p_filesz;
-				// printf("text_size: %d\n", text_size);
-				// for (size_t j = 0; j < text_size; j++)
-				// {
-					
-				// 	printf("%02x ", ((uint8_t *)ehdr + i)[j]);
-				// 	if ((j + 1) % 16 == 0)
-				// 		printf("\n");
-				// }
-				// printf("\n");
 				return ((void *)(ehdr + i));
 			}
 			i++;
-            // write(1, "aaaa15\n", 8);
 		}
 	} else if (elf->arch == ELFCLASS32) {
 		Elf32_Phdr *ehdr = (Elf32_Phdr *)elf->map;

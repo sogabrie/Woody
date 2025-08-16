@@ -58,23 +58,16 @@ void encryption_text(Elf_t *elf)
 	void		*key;
 	uint32_t	key_size;
 
-    // write(1, "text01\n", 8);
 	elf->text = get_section(elf, is_text_section);
-    // write(1, "text02\n", 8);
+	if(elf->text == NULL)
+		error_file_map("No text section found", elf->map, elf->size);
 	set_phdr_flags(elf, PF_W);
 	text = elf->map + get_phdr_offset(elf);
-    // write(1, "text03\n", 8);
-	// offset = get_phdr_offset(phdr, elf->arch);
-    // write(1, "text04\n", 8);
-	// elf->text_size = get_phdr_filesz(phdr, elf->arch);
-    
 	elf->text_size = get_phdr_filesz(elf);
 	key = &(elf->key);
 	key_size = KEY_SIZE;
-    // write(1, "text06\n", 8);
 	if (text < elf->map || text > elf->map_end || text + elf->text_size > elf->map_end)
         error_file_map("Text section out of bounds", elf->map, elf->size);
-    // write(1, "text08\n", 8);
     // for (size_t i = 0; i < elf->text_size; i++)
 	// {
 	// 	printf("%02x ", ((uint8_t *)text)[i]);
@@ -102,5 +95,4 @@ void encryption_text(Elf_t *elf)
 	// 		printf("\n");
 	// }
 	// printf("\n");
-
 }

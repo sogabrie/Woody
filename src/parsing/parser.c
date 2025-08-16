@@ -30,13 +30,13 @@ int hex_char_to_int(char c) {
 
 void check_key(Elf_t *elf, char *key) {
     if (strlen(key) != KEY_SIZE * 2)
-        error_file("Input string must be exactly 64 hex characters.\n");
-    for (int i = 0; i < 32; i++) {
+        error_file_map("Input string must be exactly 64 hex characters.", elf->map, elf->size);
+    for (int i = 0; i < KEY_SIZE; i++) {
         int high = hex_char_to_int(key[2 * i]);
         int low  = hex_char_to_int(key[2 * i + 1]);
 
         if (high == -1 || low == -1) {
-            error_file("Invalid hex character\n");
+            error_file_map("Invalid hex character", elf->map, elf->size);
         }
         elf->key[i] = (char)((high << 4) | low);
     }
@@ -47,7 +47,7 @@ void	get_key(Elf_t *elf)
 	int		fd;
 
 	if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
-        error_file("/dev/urandom");
+        error_file_map("Error urandom", elf->map, elf->size);
 	read(fd, elf->key, KEY_SIZE);
 	close(fd);
 }
@@ -72,7 +72,6 @@ void main_pars(Elf_t *elf, char *filename, char *key) {
 
     if (elf == NULL || filename == NULL)
         error_file("Invalid parameters passed to main_pars.\n");
-    print_key(elf, key);
     // fd = open(filename, O_RDWR);
     fd = open(filename, O_RDONLY);
     if (fd < 0)
@@ -85,29 +84,14 @@ void main_pars(Elf_t *elf, char *filename, char *key) {
     elf->map = mmap(NULL, elf->size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     if (elf->map == MAP_FAILED)
         error_file_fd("Error mapping file", fd);
-    // close(fd);
+    close(fd);
     // if (elf->size < sizeof(Elf64_Ehdr))
     //     error_file_map("File too small to be a valid ELF file", elf->map, elf->size);
     elf->arch = ((Elf64_Ehdr *)elf->map)->e_ident[EI_CLASS];
     elf->map_end = elf->map + elf->size;
     check_ELF(elf);
+    print_key(elf, key);
 }
-
-    // if(bytes[EI_CLASS] == ELFCLASS64) {
-    //     elf.ehdr64 = (Elf64_Ehdr *)elf.map;
-    //     elf.phdr64 = (Elf64_Phdr *)(elf.map + elf.ehdr64->e_phoff);
-    //     elf.ehdr32 = NULL;
-    //     elf.phdr32 = NULL;
-    // } else if (bytes[EI_CLASS] == ELFCLASS32) {
-    //     elf.ehdr32 = (Elf32_Ehdr *)elf.map;
-    //     elf.phdr32 = (Elf32_Phdr *)(elf.map + elf.ehdr32->e_phoff);
-    //     elf.ehdr64 = NULL;
-    //     elf.phdr64 = NULL;
-    // } else {
-    //     munmap(elf.map, elf.size);
-    //     error_file("Unsupported ELF class");
-    // }
-    // munmap(elf.map, elf.filesize);
 
 // nasm -f elf64 woody_stub.asm -o woody_stub.o
 // objcopy -O binary woody_stub.o woody_stub.bin

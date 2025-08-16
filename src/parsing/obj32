@@ -6,7 +6,7 @@ Disassembly of section .text:
 
 00000000 <decrypt>:
    0:	60                   	pusha
-   1:	eb 70                	jmp    73 <woody>
+   1:	eb 68                	jmp    6b <woody>
 
 00000003 <end_code>:
    3:	59                   	pop    ecx
@@ -14,68 +14,63 @@ Disassembly of section .text:
    9:	bb 01 00 00 00       	mov    ebx,0x1
    e:	ba 0e 00 00 00       	mov    edx,0xe
   13:	cd 80                	int    0x80
-  15:	be 2b 00 00 00       	mov    esi,0x2b
-  1a:	e8 50 00 00 00       	call   6f <get_eip>
-  1f:	81 ef 00 00 01 00    	sub    edi,0x10000
-  25:	eb 5f                	jmp    86 <key>
+  15:	b9 2b 00 00 00       	mov    ecx,0x2b
+  1a:	be 20 00 00 00       	mov    esi,0x20
+  1f:	e8 43 00 00 00       	call   67 <get_eip>
+  24:	81 ea 00 00 01 00    	sub    edx,0x10000
+  2a:	31 db                	xor    ebx,ebx
+  2c:	31 c0                	xor    eax,eax
+  2e:	eb 4e                	jmp    7e <key>
 
-00000027 <back_key>:
-  27:	5b                   	pop    ebx
-  28:	6a 20                	push   0x20
-  2a:	31 c0                	xor    eax,eax
+00000030 <back_key>:
+  30:	5f                   	pop    edi
 
-0000002c <back_key.loop_start>:
-  2c:	39 f0                	cmp    eax,esi
-  2e:	73 39                	jae    69 <back_key.loop_end>
-  30:	50                   	push   eax
-  31:	51                   	push   ecx
-  32:	b9 20 00 00 00       	mov    ecx,0x20
-  37:	01 c1                	add    ecx,eax
-  39:	89 c8                	mov    eax,ecx
-  3b:	31 d2                	xor    edx,edx
-  3d:	b9 1f 00 00 00       	mov    ecx,0x1f
-  42:	f7 f1                	div    ecx
-  44:	88 d1                	mov    cl,dl
-  46:	59                   	pop    ecx
-  47:	58                   	pop    eax
-  48:	0f b6 04 07          	movzx  eax,BYTE PTR [edi+eax*1]
-  4c:	d2 c8                	ror    al,cl
-  4e:	50                   	push   eax
-  4f:	51                   	push   ecx
-  50:	89 c0                	mov    eax,eax
-  52:	31 d2                	xor    edx,edx
-  54:	b9 20 00 00 00       	mov    ecx,0x20
-  59:	f7 f1                	div    ecx
-  5b:	0f b6 1c 13          	movzx  ebx,BYTE PTR [ebx+edx*1]
-  5f:	59                   	pop    ecx
-  60:	58                   	pop    eax
-  61:	30 d8                	xor    al,bl
-  63:	88 04 07             	mov    BYTE PTR [edi+eax*1],al
-  66:	40                   	inc    eax
-  67:	eb c3                	jmp    2c <back_key.loop_start>
+00000031 <routine>:
+  31:	30 c0                	xor    al,al
+  33:	88 d9                	mov    cl,bl
+  35:	80 c1 04             	add    cl,0x4
+  38:	0f b6 d9             	movzx  ebx,cl
+  3b:	88 d9                	mov    cl,bl
+  3d:	80 e1 1f             	and    cl,0x1f
+  40:	b5 08                	mov    ch,0x8
+  42:	f6 f5                	div    ch
+  44:	88 e1                	mov    cl,ah
+  46:	0f b6 c9             	movzx  ecx,cl
+  49:	8a 02                	mov    al,BYTE PTR [edx]
+  4b:	d2 c0                	rol    al,cl
+  4d:	8a 0c 1f             	mov    cl,BYTE PTR [edi+ebx*1]
+  50:	30 c8                	xor    al,cl
+  52:	88 02                	mov    BYTE PTR [edx],al
+  54:	42                   	inc    edx
+  55:	43                   	inc    ebx
+  56:	39 f3                	cmp    ebx,esi
+  58:	75 05                	jne    5f <loopinstr>
+  5a:	80 c4 2a             	add    ah,0x2a
+  5d:	31 db                	xor    ebx,ebx
 
-00000069 <back_key.loop_end>:
-  69:	61                   	popa
-  6a:	e9 26 00 00 00       	jmp    95 <key_str+0xa>
+0000005f <loopinstr>:
+  5f:	e2 d0                	loop   31 <routine>
+  61:	61                   	popa
+  62:	e9 26 00 00 00       	jmp    8d <key_str+0xa>
 
-0000006f <get_eip>:
-  6f:	8b 3c 24             	mov    edi,DWORD PTR [esp]
-  72:	c3                   	ret
+00000067 <get_eip>:
+  67:	8b 14 24             	mov    edx,DWORD PTR [esp]
+  6a:	c3                   	ret
 
-00000073 <woody>:
-  73:	e8 8b ff ff ff       	call   3 <end_code>
+0000006b <woody>:
+  6b:	e8 93 ff ff ff       	call   3 <end_code>
 
-00000078 <woody_str>:
-  78:	2e 2e 2e 2e 57       	cs cs cs cs push edi
-  7d:	4f                   	dec    edi
-  7e:	4f                   	dec    edi
-  7f:	44                   	inc    esp
-  80:	59                   	pop    ecx
-  81:	2e                   	cs
-  82:	2e                   	cs
-  83:	2e                   	cs
-  84:	2e                   	cs
-  85:	0a                   	.byte 0xa
+00000070 <woody_str>:
+  70:	2e 2e 2e 2e 57       	cs cs cs cs push edi
+  75:	4f                   	dec    edi
+  76:	4f                   	dec    edi
+  77:	44                   	inc    esp
+  78:	59                   	pop    ecx
+  79:	2e                   	cs
+  7a:	2e                   	cs
+  7b:	2e                   	cs
+  7c:	2e                   	cs
+  7d:	0a                   	.byte 0xa
 
-00000086 <key>:
-  86:	e8 9c ff ff ff       	call   27 <back_key>
+0000007e <key>:
+  7e:	e8 ad ff ff ff       	call   30 <back_key>
