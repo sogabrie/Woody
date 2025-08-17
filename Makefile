@@ -32,15 +32,15 @@ OBJS_S = ${subst ${SRC}, ${OBJ}, ${SRCS_S:.s=.o}}
 OBJS = ${OBJS_C} ${OBJS_S}
 LIB_DIR = ${foreach dir, ${LIBS}, ${wildcard ${dir}/*.h}}
 
-ifeq ($(ARCH_MODE), 32)
-    ARCH_FLAGS = -m32
-    NASM_FORMAT = elf
-    TARGET_SUFFIX = _x32
-else
+# ifeq ($(ARCH_MODE), 32)
+#     ARCH_FLAGS = -m32
+#     NASM_FORMAT = elf
+#     TARGET_SUFFIX = _x32
+# else
     ARCH_FLAGS =
     NASM_FORMAT = elf64
     TARGET_SUFFIX = 
-endif
+# endif
 
 # Main Part
 all : ${NAME}${TARGET_SUFFIX}
@@ -63,7 +63,7 @@ clean :
 
 fclean : clean
 	${MAKE} -C ${LIBFT_DIR} fclean
-	${RM} ${NAME}_x64 ${NAME}_x32 # Удаляем обе версии исполняемого файла
+	${RM} ${NAME}_x64 ${NAME}_x32
 
 re : fclean 
 	${MAKE} all

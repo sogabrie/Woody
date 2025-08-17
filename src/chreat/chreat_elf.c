@@ -128,7 +128,7 @@ void chreat_elf(Elf_t *elf) {
     if (elf->arch == ELFCLASS64) {
         chreat_elf_64(elf, &new_elf);
     } else if (elf->arch == ELFCLASS32) {
-        // error_file_map("32-bit ELF not supported yet", elf->map, elf->size);
+        error_file_map("32-bit ELF not supported yet", elf->map, elf->size);
         chreat_elf_32(elf, &new_elf);
     } else {
         error_file("Unsupported ELF architecture");
